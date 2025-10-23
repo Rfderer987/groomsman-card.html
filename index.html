@@ -1,220 +1,174 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Will you be my groomsman?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
-    --card-w: 640px;
-    --card-h: 420px;
-    --bg: #f3f3f6;
-    --accent: #c0392b;
-    --paper: #fffdf8;
-    --shadow: 0 12px 30px rgba(0,0,0,0.15);
+    --card-w: 760px;
+    --card-h: 480px;
+    --ink: #1c1b1a;
+    --paper: #fffdf7;
+    --edge: #d6cfc3;
+    --accent: #8b5e34;          /* antique gold */
+    --hint: #6f6a63;
+    --shadow: 0 18px 40px rgba(0,0,0,.15);
   }
   html,body{height:100%}
   body{
     margin:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background: linear-gradient(180deg,#eef2f6, #f9f9fb);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    color:#222;
-    padding:32px;
+    display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(60% 60% at 50% 40%, #f5f3ee, #ece9e2);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    padding:28px;
   }
-  .stage{
-    width:100%;
-    max-width:900px;
-    display:flex;
-    gap:28px;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-  }
+  .stage{display:flex; flex-direction:column; align-items:center; gap:14px}
+  .note{font: 400 14px/1.4 "Libre Baskerville", serif; color:var(--hint); text-align:center}
 
-  .card-wrap{
-    perspective:1400px;
-    width: var(--card-w);
-    height: var(--card-h);
-    position:relative;
-  }
-
+  .wrap{perspective:1600px; width:var(--card-w); height:var(--card-h)}
   .card{
-    width:100%;
-    height:100%;
-    position:relative;
-    transform-style:preserve-3d;
-    transition: transform 900ms cubic-bezier(.2,.9,.25,1);
-    cursor:pointer;
+    width:100%; height:100%; position:relative; transform-style:preserve-3d;
+    transition: transform 900ms cubic-bezier(.18,.82,.22,1);
+    cursor:pointer; border-radius:14px;
   }
-
-  /* closed state rotates to 0, open state rotateY(-180deg) */
-  .card.open { transform: rotateY(-180deg); }
+  .card.open{ transform: rotateY(-180deg); }
 
   .face{
-    position:absolute;
-    inset:0;
-    backface-visibility:hidden;
-    border-radius:12px;
-    box-shadow:var(--shadow);
-    overflow:hidden;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    position:absolute; inset:0; backface-visibility:hidden; overflow:hidden;
+    border-radius:14px; box-shadow:var(--shadow);
+    background: var(--paper);
+  }
+  /* subtle paper and letterpress edge */
+  .face::before{
+    content:""; position:absolute; inset:0;
+    background:
+      linear-gradient(#ffffff00, #ffffff00),
+      radial-gradient(1200px 400px at 50% 0%, rgba(0,0,0,.03), transparent 60%),
+      radial-gradient(1000px 400px at 50% 100%, rgba(0,0,0,.04), transparent 60%);
+    mix-blend-mode:multiply; pointer-events:none;
+  }
+  .border{
+    position:absolute; inset:18px; border-radius:10px;
+    border:1px solid var(--edge); box-shadow: inset 0 0 0 3px rgba(255,255,255,.7);
   }
 
-  .face.front{
-    background: linear-gradient(180deg,#fff, #fff7f6);
-    border: 6px solid var(--accent);
+  /* FRONT */
+  .front{
+    display:grid; place-items:center; padding:38px 40px;
+    background:
+      linear-gradient(180deg, #fffef9, #f9f5ed);
   }
-
-  .front .cover{
-    width:100%;
-    height:100%;
-    display:grid;
-    grid-template-rows: 1fr auto;
+  .cover{
+    text-align:center; max-width:520px;
   }
-
+  .brand{
+    font: 500 13px/1 "Libre Baskerville", serif; letter-spacing:.32em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:18px;
+  }
   .title{
-    padding:28px;
-    display:flex;
-    gap:16px;
-    align-items:center;
+    font: 700 38px/1.1 "Playfair Display", serif; margin:0; color:var(--ink);
+  }
+  .subtitle{
+    margin:.7rem 0 0; color:var(--hint); font: 400 15px/1.6 "Libre Baskerville", serif;
+  }
+  .openBtn{
+    display:inline-block; margin-top:24px; padding:10px 18px;
+    font: 600 13px/1 "Libre Baskerville", serif; letter-spacing:.12em; text-transform:uppercase;
+    color:white; background:linear-gradient(180deg,#9b6d3f,#7f552e);
+    border-radius:999px; box-shadow:0 10px 18px rgba(139,94,52,.25);
   }
 
-  .title img{
-    width:96px;
-    height:96px;
-    object-fit:cover;
-    border-radius:8px;
-    border:3px solid rgba(255,255,255,0.7);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  /* INSIDE */
+  .back{ transform: rotateY(-180deg); padding:26px 28px; }
+  .inner{
+    position:relative; height:100%; display:grid; grid-template-columns: 1.25fr .95fr; gap:22px;
   }
+  .letter{
+    padding:18px 22px 4px 22px; overflow:auto;
+  }
+  .letter h2{
+    font: 700 22px/1.3 "Playfair Display", serif; color:var(--accent); margin:0 0 10px;
+  }
+  .letter p{
+    font: 400 16px/1.65 "Libre Baskerville", serif; margin:0 0 14px; color:#242220;
+  }
+  .signoff{ margin-top:10px }
+  .signoff strong{ font-weight:700 }
 
-  .title h1{
-    margin:0;
-    font-size:26px;
-    line-height:1.05;
-    color:var(--accent);
+  .photo{
+    display:flex; align-items:center; justify-content:center; padding:8px;
   }
-  .title p{ margin:0; opacity:0.85; font-size:14px }
+  .photo figure{
+    margin:0; width:100%; height:100%;
+    border-radius:12px; overflow:hidden; border:1px solid #e8e2d8;
+    box-shadow:0 14px 28px rgba(0,0,0,.12);
+  }
+  .photo img{ width:100%; height:100%; object-fit:cover; filter:grayscale(12%); }
 
-  .open-cta{
-    padding:18px;
-    text-align:center;
-    background:linear-gradient(90deg, rgba(240,240,240,0.5), rgba(255,255,255,0.5));
-    border-top:1px solid rgba(0,0,0,0.04);
-  }
-  .open-cta .btn{
-    display:inline-block;
-    padding:10px 18px;
-    border-radius:8px;
-    background:var(--accent);
-    color:white;
-    font-weight:600;
-    letter-spacing:0.2px;
-    box-shadow: 0 6px 18px rgba(192,57,43,0.25);
-  }
+  .hint{ font: 400 12px/1.4 "Libre Baskerville", serif; color:var(--hint); text-align:center; }
 
-  /* back face (inside of card) */
-  .face.back{
-    transform: rotateY(-180deg);
-    background: linear-gradient(180deg, var(--paper), #fff7f2);
-    border-radius:12px;
-    padding:34px;
-  }
-  .message{
-    width:100%;
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    gap:18px;
-    text-align:left;
-  }
-  .message h2{ margin:0; color:var(--accent); font-size:28px }
-  .message p{ margin:0; font-size:16px; line-height:1.4; color:#333; }
-
-  .actions{ margin-top:8px; display:flex; gap:10px; align-items:center }
-  .actions .small{
-    padding:8px 12px; border-radius:8px; font-weight:600; border:1px solid rgba(0,0,0,0.06);
-    background:transparent; cursor:pointer;
-  }
-
-  /* small hint */
-  .hint{ margin-top:10px; font-size:13px; color:#666 }
-
-  /* responsive */
-  @media (max-width:760px){
-    :root{ --card-w: 92vw; --card-h: 62vw; }
-    .title img{ width:72px; height:72px }
+  @media (max-width: 900px){
+    :root{ --card-w: 92vw; --card-h: min(120vw, 560px); }
+    .inner{ grid-template-columns: 1fr; grid-template-rows: 1fr .9fr; }
   }
 </style>
 </head>
 <body>
   <div class="stage">
-    <div style="text-align:center; margin-bottom:8px">
-      <strong>Open the card to see the message</strong>
-    </div>
+    <div class="note">Tap anywhere on the card to open</div>
 
-    <div class="card-wrap" role="button" aria-label="Open card">
-      <div id="card" class="card" tabindex="0">
-        <!-- front -->
-        <div class="face front" id="front">
+    <div class="wrap" role="button" aria-label="Open card">
+      <div id="card" class="card" tabindex="0" aria-haspopup="true" aria-expanded="false">
+        <!-- FRONT -->
+        <section class="face front">
+          <div class="border" aria-hidden="true"></div>
           <div class="cover">
-            <div class="title">
-              <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop&s=placeholder" alt="Us">
-              <div>
-                <h1>Will you be my groomsman?</h1>
-                <p>Tap to open — I’ve got a question for you.</p>
-              </div>
-            </div>
-            <div class="open-cta">
-              <span class="btn">Open Card</span>
+            <div class="brand">Justin &amp; Yufei</div>
+            <h1 class="title">Will you be my groomsman?</h1>
+            <p class="subtitle">Raul, I’ve got something special to ask you.</p>
+            <span class="openBtn">Open card</span>
+          </div>
+        </section>
+
+        <!-- INSIDE -->
+        <section class="face back">
+          <div class="border" aria-hidden="true"></div>
+          <div class="inner">
+            <article class="letter" aria-label="Letter">
+              <h2>Raul,</h2>
+              <p>You’re my oldest friend and I cannot think of anyone better to stand by my side at the altar a year from now. These past two weeks have been incredible. I’m so incredibly blessed to have created so many new memories and experiences with you… dare I say we’ll be doing that for the rest of our days.</p>
+              <p>From being there for the big moments watching you and Jen getting married to the small moments of pigging out on food and sitting around Beecroft doing nothing, I cannot wait for you both to come back so we can do it again and again and again.</p>
+              <p>When I wrote in your card I cannot wait for our next chapter I truly meant it. Dirty thirties, being married, having kids, Saturday tennis lessons, and encouraging them to play with each other until they’re family like us, beating them if they don’t — I look forward to it every day. August 30 brings us closer to that dream.</p>
+              <p>I hate that you both have to go but I’ll see you back in Sydney soon.</p>
+              <p class="signoff">I love you like a brother, Raul.<br><strong>Love, Justin</strong></p>
+            </article>
+
+            <div class="photo" aria-label="Photo">
+              <figure>
+                <!-- Update this path to your uploaded image -->
+                <img src="assets/raul.jpg" alt="Raul and friends celebrating at a wedding">
+              </figure>
             </div>
           </div>
-        </div>
-
-        <!-- inside/back -->
-        <div class="face back" id="back">
-          <div class="message">
-            <h2>Mate — would you stand with me?</h2>
-            <p>
-              I've shared more laughs, terrible decisions, and great times with you than I can count.
-              It'd mean the world to me if you'd be one of my groomsmen on the big day.
-            </p>
-            <p style="font-weight:700">Wedding date: 30 August 2026 — Mosman, Sydney</p>
-
-            <div class="actions">
-              <button class="small" id="acceptBtn">Absolutely — I’m in!</button>
-              <button class="small" id="chatBtn">Let’s chat first</button>
-            </div>
-
-            <div class="hint">You can reply in WhatsApp or click the button above.</div>
-          </div>
-        </div>
+        </section>
       </div>
     </div>
 
-    <div style="font-size:13px; color:#666; text-align:center; max-width:640px;">
-      Tip: host this file and send the link — works great on mobile and desktop.
-    </div>
+    <div class="hint">Tip: keep your photo roughly 3:2 landscape for best fit.</div>
   </div>
 
 <script>
   const card = document.getElementById('card');
-  card.addEventListener('click', () => card.classList.toggle('open'));
-  card.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') card.classList.toggle('open'); });
-
-  document.getElementById('acceptBtn').addEventListener('click', () => {
-    alert("Legend — thanks! I'll send details soon.");
-    // optionally redirect to WhatsApp: window.location.href = "https://wa.me/61412345678?text=Count%20me%20in!";
-  });
-  document.getElementById('chatBtn').addEventListener('click', () => {
-    const phone = prompt("Want to drop a number to chat, or type your WhatsApp link? (optional)");
-    if(phone) window.location.href = `https://wa.me/${phone.replace(/\\D/g,'')}`;
+  function toggleOpen(){
+    const open = card.classList.toggle('open');
+    card.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  card.addEventListener('click', toggleOpen);
+  card.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleOpen(); }
   });
 </script>
 </body>
