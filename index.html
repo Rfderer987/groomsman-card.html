@@ -7,21 +7,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
+    --card-w: 760px;
+    --card-h: 480px;
     --ink:#1c1b1a; --paper:#fffdf7; --edge:#d6cfc3; --accent:#8b5e34; --hint:#6f6a63;
-    --card-w:760px; --card-h:480px; --shadow:0 18px 40px rgba(0,0,0,.15);
+    --shadow:0 18px 40px rgba(0,0,0,.15);
   }
   html,body{height:100%}
   body{
-    margin:0; background:radial-gradient(60% 60% at 50% 40%, #f5f3ee, #ece9e2);
-    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; color:var(--ink);
-    padding:28px; display:flex; align-items:center; justify-content:center;
-    font-family:"Libre Baskerville", serif;
+    margin:0; display:flex; align-items:center; justify-content:center; padding:28px;
+    background:radial-gradient(60% 60% at 50% 40%, #f5f3ee, #ece9e2); color:var(--ink);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
   }
   .stage{display:flex; flex-direction:column; align-items:center; gap:14px; width:100%}
   .note{font:400 14px/1.4 "Libre Baskerville", serif; color:var(--hint); text-align:center}
 
-  /* ---------- DESKTOP (flip card) ---------- */
-  .desktop{display:block}
+  /* Card shell */
   .wrap{perspective:1600px; width:var(--card-w); height:var(--card-h)}
   .card{width:100%; height:100%; position:relative; transform-style:preserve-3d;
         transition:transform 900ms cubic-bezier(.18,.82,.22,1); cursor:pointer; border-radius:14px;}
@@ -30,130 +30,115 @@
         border-radius:14px; box-shadow:var(--shadow); background:var(--paper)}
   .face::before{content:""; position:absolute; inset:0;
     background:radial-gradient(1200px 400px at 50% 0%, rgba(0,0,0,.03), transparent 60%),
-               radial-gradient(1000px 400px at 50% 100%, rgba(0,0,0,.04), transparent 60%);
-    mix-blend-mode:multiply; pointer-events:none;}
+               radial-gradient(1000px 400px at 50% 100%, rgba(0,0,0,.04), transparent 60%);}
   .border{position:absolute; inset:18px; border-radius:10px; border:1px solid var(--edge);
           box-shadow: inset 0 0 0 3px rgba(255,255,255,.7);}
+
+  /* Front */
   .front{display:grid; place-items:center; padding:38px 40px;
          background:linear-gradient(180deg,#fffef9,#f9f5ed)}
   .cover{text-align:center; max-width:520px}
   .brand{font:500 13px/1 "Libre Baskerville", serif; letter-spacing:.32em; text-transform:uppercase; color:var(--accent); margin-bottom:18px}
   .title{font:700 38px/1.1 "Playfair Display", serif; margin:0}
-  .subtitle{margin:.7rem 0 0; color:var(--hint)}
+  .subtitle{margin:.7rem 0 0; color:var(--hint); font:400 15px/1.6 "Libre Baskerville", serif}
   .openBtn{display:inline-block; margin-top:24px; padding:10px 18px; border-radius:999px; color:#fff;
            background:linear-gradient(180deg,#9b6d3f,#7f552e); font:600 13px/1 "Libre Baskerville", serif; letter-spacing:.12em; text-transform:uppercase;
            box-shadow:0 10px 18px rgba(139,94,52,.25)}
+
+  /* Back (inside) */
   .back{transform:rotateY(-180deg); padding:26px 28px}
-  .inner{position:relative; height:100%; display:grid; grid-template-columns:1.25fr .95fr; gap:22px}
+  .inner{
+    position:relative; height:100%;
+    display:grid; grid-template-columns:1.25fr .95fr; gap:22px;
+  }
   .letter{padding:18px 22px 4px 22px; overflow:auto}
   .letter h2{font:700 22px/1.3 "Playfair Display", serif; color:var(--accent); margin:0 0 10px}
   .letter p{font:400 16px/1.65 "Libre Baskerville", serif; margin:0 0 14px; color:#242220}
   .signoff{margin-top:10px}
+
   .photo{display:flex; align-items:center; justify-content:center; padding:8px}
   .photo figure{margin:0; width:100%; height:100%; border-radius:12px; overflow:hidden; border:1px solid #e8e2d8; box-shadow:0 14px 28px rgba(0,0,0,.12)}
   .photo img{width:100%; height:100%; object-fit:cover; filter:grayscale(12%)}
 
-  /* ---------- MOBILE (simple stacked layout) ---------- */
-  .mobile{display:none}
-  .mobile .sheet{
-    width:min(96vw,720px); background:var(--paper); border-radius:14px; box-shadow:var(--shadow);
-    border:1px solid var(--edge); padding:20px 18px; margin:0 auto;
-  }
-  .mobile h1{font:700 26px/1.2 "Playfair Display", serif; margin:0 0 8px}
-  .mobile .brand{font:500 12px/1 "Libre Baskerville", serif; letter-spacing:.28em; text-transform:uppercase; color:var(--accent); margin-bottom:10px}
-  .mobile .subtitle{color:var(--hint); margin:0 0 14px}
-  .mobile .letter p{font:400 16px/1.65 "Libre Baskerville", serif; color:#242220; margin:0 0 14px}
-  .mobile .imgWrap{margin-top:14px; border:1px solid #e8e2d8; border-radius:12px; overflow:hidden}
-  .mobile img{display:block; width:100%; height:auto}  /* image sits at bottom */
-
+  /* ---------- Mobile tweaks: photo anchored at bottom, text scrolls ---------- */
   @media (max-width: 900px){
-    body{padding:16px; align-items:flex-start}
-    .desktop{display:none}     /* hide flip card */
-    .mobile{display:block}     /* show simple stacked view */
+    :root{ --card-w: 92vw; --card-h: 78vh; }   /* tall enough but within viewport */
+    body{ padding:16px; }
+
+    .inner{
+      display:flex; flex-direction:column; height:100%;
+      gap:12px;
+    }
+    .letter{
+      flex:1 1 auto;            /* take remaining space above the image */
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      padding:12px 16px 6px 16px;
+    }
+    .photo{
+      flex:0 0 32vh;            /* fixed block at the bottom of the inside page */
+      margin-top:auto;          /* anchor to bottom of the card */
+      padding:8px 12px 14px 12px;
+    }
+    .photo figure{height:100%}
+    .photo img{
+      object-fit:contain;       /* show the whole image (no crop) */
+      filter:none;
+    }
   }
 </style>
 </head>
 <body>
   <div class="stage">
+    <div class="note">Tap anywhere on the card to open</div>
 
-    <!-- ===== MOBILE SIMPLE VIEW ===== -->
-    <section class="mobile" aria-label="Invitation (mobile)">
-      <div class="sheet">
-        <div class="brand">Yufei &amp; Justin</div>
-        <h1>Will you be my groomsman?</h1>
-        <p class="subtitle">Raul, I’ve got something special to ask you.</p>
+    <div class="wrap" role="button" aria-label="Open card">
+      <div id="card" class="card" tabindex="0" aria-haspopup="true" aria-expanded="false">
+        <!-- FRONT -->
+        <section class="face front">
+          <div class="border" aria-hidden="true"></div>
+          <div class="cover">
+            <div class="brand">Yufei &amp; Justin</div>
+            <h1 class="title">Will you be my groomsman?</h1>
+            <p class="subtitle">Raul, I’ve got something special to ask you.</p>
+            <span class="openBtn">Open card</span>
+          </div>
+        </section>
 
-        <article class="letter">
-          <p><strong>Raul,</strong></p>
-          <p>You’re my oldest friend and I cannot think of anyone better to stand by my side at the altar a year from now. These past two weeks have been incredible. I’m so incredibly blessed to have created so many new memories and experiences with you… dare I say we’ll be doing that for the rest of our days.</p>
-          <p>From being there for the big moments watching you and Jen getting married to the small moments of pigging out on food and sitting around Beecroft doing nothing, I cannot wait for you both to come back so we can do it again and again and again.</p>
-          <p>When I wrote in your card I cannot wait for our next chapter I truly meant it. Dirty thirties, being married, having kids, Saturday tennis lessons, and encouraging them to play with each other until they’re family like us, beating them if they don’t — I look forward to it every day. August 30 brings us closer to that dream.</p>
-          <p>I hate that you both have to go but I’ll see you back in Sydney soon.</p>
-          <p>I love you like a brother, Raul.<br><strong>Love, Justin</strong></p>
-        </article>
+        <!-- BACK -->
+        <section class="face back">
+          <div class="border" aria-hidden="true"></div>
+          <div class="inner">
+            <article class="letter" aria-label="Letter">
+              <h2>Raul,</h2>
+              <p>You’re my oldest friend and I cannot think of anyone better to stand by my side at the altar a year from now. These past two weeks have been incredible. I’m so incredibly blessed to have created so many new memories and experiences with you… dare I say we’ll be doing that for the rest of our days.</p>
+              <p>From being there for the big moments watching you and Jen getting married to the small moments of pigging out on food and sitting around Beecroft doing nothing, I cannot wait for you both to come back so we can do it again and again and again.</p>
+              <p>When I wrote in your card I cannot wait for our next chapter I truly meant it. Dirty thirties, being married, having kids, Saturday tennis lessons, and encouraging them to play with each other until they’re family like us, beating them if they don’t — I look forward to it every day. August 30 brings us closer to that dream.</p>
+              <p>I hate that you both have to go but I’ll see you back in Sydney soon.</p>
+              <p class="signoff">I love you like a brother, Raul.<br><strong>Love, Justin</strong></p>
+            </article>
 
-        <!-- Photo at the bottom -->
-        <div class="imgWrap">
-          <img src="assets/raul.jpg" alt="Raul and friends celebrating at a wedding">
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== DESKTOP FLIP CARD ===== -->
-    <section class="desktop" aria-label="Invitation (desktop)">
-      <div class="note">Tap anywhere on the card to open</div>
-      <div class="wrap" role="button" aria-label="Open card">
-        <div id="card" class="card" tabindex="0" aria-haspopup="true" aria-expanded="false">
-          <!-- FRONT -->
-          <section class="face front">
-            <div class="border" aria-hidden="true"></div>
-            <div class="cover">
-              <div class="brand">Yufei &amp; Justin</div>
-              <h1 class="title">Will you be my groomsman?</h1>
-              <p class="subtitle">Raul, I’ve got something special to ask you.</p>
-              <span class="openBtn">Open card</span>
+            <div class="photo" aria-label="Photo">
+              <figure>
+                <img src="assets/raul.jpg" alt="Raul and friends celebrating at a wedding">
+              </figure>
             </div>
-          </section>
-
-          <!-- INSIDE -->
-          <section class="face back">
-            <div class="border" aria-hidden="true"></div>
-            <div class="inner">
-              <article class="letter" aria-label="Letter">
-                <h2>Raul,</h2>
-                <p>You’re my oldest friend and I cannot think of anyone better to stand by my side at the altar a year from now. These past two weeks have been incredible. I’m so incredibly blessed to have created so many new memories and experiences with you… dare I say we’ll be doing that for the rest of our days.</p>
-                <p>From being there for the big moments watching you and Jen getting married to the small moments of pigging out on food and sitting around Beecroft doing nothing, I cannot wait for you both to come back so we can do it again and again and again.</p>
-                <p>When I wrote in your card I cannot wait for our next chapter I truly meant it. Dirty thirties, being married, having kids, Saturday tennis lessons, and encouraging them to play with each other until they’re family like us, beating them if they don’t — I look forward to it every day. August 30 brings us closer to that dream.</p>
-                <p>I hate that you both have to go but I’ll see you back in Sydney soon.</p>
-                <p class="signoff">I love you like a brother, Raul.<br><strong>Love, Justin</strong></p>
-              </article>
-
-              <div class="photo" aria-label="Photo">
-                <figure>
-                  <img src="assets/raul.jpg" alt="Raul and friends celebrating at a wedding">
-                </figure>
-              </div>
-            </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </div>
-    </section>
-
+    </div>
   </div>
 
 <script>
-  // Desktop flip interaction (mobile view doesn't use this)
   const card = document.getElementById('card');
-  if (card) {
-    function toggleOpen(){
-      const open = card.classList.toggle('open');
-      card.setAttribute('aria-expanded', open ? 'true' : 'false');
-    }
-    card.addEventListener('click', toggleOpen);
-    card.addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleOpen(); }
-    });
+  function toggleOpen(){
+    const open = card.classList.toggle('open');
+    card.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
+  card.addEventListener('click', toggleOpen);
+  card.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleOpen(); }
+  });
 </script>
 </body>
 </html>
