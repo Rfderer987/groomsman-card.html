@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Will you be my groomsman?</title>
+<style>
+  :root{
+    --card-w: 640px;
+    --card-h: 420px;
+    --bg: #f3f3f6;
+    --accent: #c0392b;
+    --paper: #fffdf8;
+    --shadow: 0 12px 30px rgba(0,0,0,0.15);
+  }
+  html,body{height:100%}
+  body{
+    margin:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: linear-gradient(180deg,#eef2f6, #f9f9fb);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color:#222;
+    padding:32px;
+  }
+  .stage{
+    width:100%;
+    max-width:900px;
+    display:flex;
+    gap:28px;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+  }
+
+  .card-wrap{
+    perspective:1400px;
+    width: var(--card-w);
+    height: var(--card-h);
+    position:relative;
+  }
+
+  .card{
+    width:100%;
+    height:100%;
+    position:relative;
+    transform-style:preserve-3d;
+    transition: transform 900ms cubic-bezier(.2,.9,.25,1);
+    cursor:pointer;
+  }
+
+  /* closed state rotates to 0, open state rotateY(-180deg) */
+  .card.open { transform: rotateY(-180deg); }
+
+  .face{
+    position:absolute;
+    inset:0;
+    backface-visibility:hidden;
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .face.front{
+    background: linear-gradient(180deg,#fff, #fff7f6);
+    border: 6px solid var(--accent);
+  }
+
+  .front .cover{
+    width:100%;
+    height:100%;
+    display:grid;
+    grid-template-rows: 1fr auto;
+  }
+
+  .title{
+    padding:28px;
+    display:flex;
+    gap:16px;
+    align-items:center;
+  }
+
+  .title img{
+    width:96px;
+    height:96px;
+    object-fit:cover;
+    border-radius:8px;
+    border:3px solid rgba(255,255,255,0.7);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  }
+
+  .title h1{
+    margin:0;
+    font-size:26px;
+    line-height:1.05;
+    color:var(--accent);
+  }
+  .title p{ margin:0; opacity:0.85; font-size:14px }
+
+  .open-cta{
+    padding:18px;
+    text-align:center;
+    background:linear-gradient(90deg, rgba(240,240,240,0.5), rgba(255,255,255,0.5));
+    border-top:1px solid rgba(0,0,0,0.04);
+  }
+  .open-cta .btn{
+    display:inline-block;
+    padding:10px 18px;
+    border-radius:8px;
+    background:var(--accent);
+    color:white;
+    font-weight:600;
+    letter-spacing:0.2px;
+    box-shadow: 0 6px 18px rgba(192,57,43,0.25);
+  }
+
+  /* back face (inside of card) */
+  .face.back{
+    transform: rotateY(-180deg);
+    background: linear-gradient(180deg, var(--paper), #fff7f2);
+    border-radius:12px;
+    padding:34px;
+  }
+  .message{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:18px;
+    text-align:left;
+  }
+  .message h2{ margin:0; color:var(--accent); font-size:28px }
+  .message p{ margin:0; font-size:16px; line-height:1.4; color:#333; }
+
+  .actions{ margin-top:8px; display:flex; gap:10px; align-items:center }
+  .actions .small{
+    padding:8px 12px; border-radius:8px; font-weight:600; border:1px solid rgba(0,0,0,0.06);
+    background:transparent; cursor:pointer;
+  }
+
+  /* small hint */
+  .hint{ margin-top:10px; font-size:13px; color:#666 }
+
+  /* responsive */
+  @media (max-width:760px){
+    :root{ --card-w: 92vw; --card-h: 62vw; }
+    .title img{ width:72px; height:72px }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div style="text-align:center; margin-bottom:8px">
+      <strong>Open the card to see the message</strong>
+    </div>
+
+    <div class="card-wrap" role="button" aria-label="Open card">
+      <div id="card" class="card" tabindex="0">
+        <!-- front -->
+        <div class="face front" id="front">
+          <div class="cover">
+            <div class="title">
+              <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop&s=placeholder" alt="Us">
+              <div>
+                <h1>Will you be my groomsman?</h1>
+                <p>Tap to open — I’ve got a question for you.</p>
+              </div>
+            </div>
+            <div class="open-cta">
+              <span class="btn">Open Card</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- inside/back -->
+        <div class="face back" id="back">
+          <div class="message">
+            <h2>Mate — would you stand with me?</h2>
+            <p>
+              I've shared more laughs, terrible decisions, and great times with you than I can count.
+              It'd mean the world to me if you'd be one of my groomsmen on the big day.
+            </p>
+            <p style="font-weight:700">Wedding date: 30 August 2026 — Mosman, Sydney</p>
+
+            <div class="actions">
+              <button class="small" id="acceptBtn">Absolutely — I’m in!</button>
+              <button class="small" id="chatBtn">Let’s chat first</button>
+            </div>
+
+            <div class="hint">You can reply in WhatsApp or click the button above.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:13px; color:#666; text-align:center; max-width:640px;">
+      Tip: host this file and send the link — works great on mobile and desktop.
+    </div>
+  </div>
+
+<script>
+  const card = document.getElementById('card');
+  card.addEventListener('click', () => card.classList.toggle('open'));
+  card.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') card.classList.toggle('open'); });
+
+  document.getElementById('acceptBtn').addEventListener('click', () => {
+    alert("Legend — thanks! I'll send details soon.");
+    // optionally redirect to WhatsApp: window.location.href = "https://wa.me/61412345678?text=Count%20me%20in!";
+  });
+  document.getElementById('chatBtn').addEventListener('click', () => {
+    const phone = prompt("Want to drop a number to chat, or type your WhatsApp link? (optional)");
+    if(phone) window.location.href = `https://wa.me/${phone.replace(/\\D/g,'')}`;
+  });
+</script>
+</body>
+</html>
